@@ -44,25 +44,25 @@ warnings.filterwarnings('ignore')
 
 # <b>Data Prerp for Ireland</b>
 
-# In[26]:
+# In[311]:
 
 
-df_crop = pd.read_csv("Crop Yield.csv") #,parse_dates=['Year']
+df_crop = pd.read_csv("Crop Yield.csv")
 
 
-# In[27]:
+# In[312]:
 
 
 df_crop
 
 
-# In[28]:
+# In[313]:
 
 
 df_crop.info()
 
 
-# In[29]:
+# In[314]:
 
 
 #remove area under crop
@@ -70,7 +70,7 @@ for col in df_crop:
     print(df_crop["Statistic"].unique())
 
 
-# In[30]:
+# In[315]:
 
 
 ####remove 000 hecatres and remove tonnes
@@ -78,19 +78,19 @@ for col in df_crop:
     print(df_crop["UNIT"].unique())
 
 
-# In[31]:
+# In[316]:
 
 
 df_crop["Type of Crop"].unique()
 
 
-# In[32]:
+# In[317]:
 
 
 df_crop['Type of Crop'].nunique()
 
 
-# In[33]:
+# In[318]:
 
 
 df_crop = df_crop[~df_crop.Statistic.str.contains("Area under Crops")]
@@ -98,38 +98,38 @@ df_crop = df_crop[~df_crop.Statistic.str.contains("Crop Yield per Hectare")]
 df_crop = df_crop[~df_crop.Statistic.str.contains("Unit")]
 
 
-# In[34]:
+# In[319]:
 
 
 df_crop.rename(columns = {'VALUE':'Yield_000_Tonnes'}, inplace = True)
 
 
-# In[35]:
+# In[320]:
 
 
 df_crop = df_crop.dropna()
 
 
-# In[36]:
+# In[321]:
 
 
 df_temp = pd.read_csv("Temperature Data.csv")
 
 
-# In[37]:
+# In[322]:
 
 
 df_temp
 
 
-# In[38]:
+# In[323]:
 
 
 for col in df_temp:
     print(df_temp["Statistic"].unique())
 
 
-# In[39]:
+# In[324]:
 
 
 df_temp = df_temp[~df_temp.Statistic.str.contains("Average Maximum Temperature")]
@@ -138,13 +138,13 @@ df_temp = df_temp[~df_temp.Statistic.str.contains("Highest Temperature")]
 df_temp = df_temp[~df_temp.Statistic.str.contains("Lowest Temperature")]
 
 
-# In[40]:
+# In[325]:
 
 
 df_temp = df_temp.dropna()
 
 
-# In[41]:
+# In[326]:
 
 
 df_temp['Month'] = df_temp['Month'].str.replace('M','/')
@@ -152,31 +152,31 @@ df_temp['Month'] = pd.to_datetime(df_temp['Month'])
 df_temp['Month'] = df_temp['Month'].dt.strftime('%Y')
 
 
-# In[42]:
+# In[327]:
 
 
 df_grp_temp = df_temp.groupby(['Month'])['VALUE'].mean().reset_index()
 
 
-# In[43]:
+# In[328]:
 
 
 df_grp_temp
 
 
-# In[44]:
+# In[329]:
 
 
 df_grp_temp.rename(columns = {'Month':'Year','VALUE':'mean_temp'}, inplace = True)
 
 
-# In[45]:
+# In[330]:
 
 
 df_grp_temp['Year'] = df_grp_temp['Year'].astype(np.int64)
 
 
-# In[46]:
+# In[331]:
 
 
 ##merging
@@ -184,45 +184,45 @@ df_grp_temp['Year'] = df_grp_temp['Year'].astype(np.int64)
 df_crop_temp=df_crop.merge(df_grp_temp, on='Year', how='left') 
 
 
-# In[47]:
+# In[332]:
 
 
 df_crop_temp
 
 
-# In[48]:
+# In[333]:
 
 
 df_crop_temp.info()
 
 
-# In[49]:
+# In[334]:
 
 
 df_rain = pd.read_csv("Rain Data.csv")
 
 
-# In[50]:
+# In[335]:
 
 
 df_rain
 
 
-# In[51]:
+# In[336]:
 
 
 for col in df_rain:
     print(df_rain["Statistic"].unique())
 
 
-# In[52]:
+# In[337]:
 
 
 df_rain = df_rain[~df_rain.Statistic.str.contains("Most Rainfall in a Day")]
 df_rain = df_rain[~df_rain.Statistic.str.contains("Raindays (0.2mm or More)")]
 
 
-# In[53]:
+# In[338]:
 
 
 df_rain['Month'] = df_rain['Month'].str.replace('M','/')
@@ -230,43 +230,43 @@ df_rain['Month'] = pd.to_datetime(df_rain['Month'])
 df_rain['Month'] = df_rain['Month'].dt.strftime('%Y')
 
 
-# In[54]:
+# In[339]:
 
 
 df_grp_rain = df_rain.groupby(['Month'])['VALUE'].sum().reset_index()
 
 
-# In[55]:
+# In[340]:
 
 
 df_grp_rain.rename(columns = {'Month':'Year','VALUE':'total_rain'}, inplace = True)##rename to tatal rain
 
 
-# In[56]:
+# In[341]:
 
 
 df_grp_rain['Year'] = df_grp_rain['Year'].astype(np.int64)
 
 
-# In[57]:
+# In[342]:
 
 
 df_grp_rain
 
 
-# In[58]:
+# In[343]:
 
 
 df_crop_temp_rain=df_crop_temp.merge(df_grp_rain, on='Year', how='left')
 
 
-# In[59]:
+# In[344]:
 
 
 df_crop_temp_rain
 
 
-# In[80]:
+# In[345]:
 
 
 df_ML1 = df_crop_temp_rain
@@ -274,20 +274,20 @@ df_ML1 = df_crop_temp_rain
 
 # <b>Data prerp UK</b>
 
-# In[61]:
+# In[346]:
 
 
 df_crop_UK = pd.read_csv("FAOSTAT UK crop data.csv")
 df_crop_UK
 
 
-# In[62]:
+# In[347]:
 
 
 print(df_crop_UK.columns)
 
 
-# In[63]:
+# In[348]:
 
 
 df_crop_UK = df_crop_UK.drop(['Domain Code', 'Domain', 'Area Code (FAO)', 'Area', 'Element Code',
@@ -295,7 +295,7 @@ df_crop_UK = df_crop_UK.drop(['Domain Code', 'Domain', 'Area Code (FAO)', 'Area'
        'Flag', 'Flag Description'], axis = 1)
 
 
-# In[64]:
+# In[349]:
 
 
 df_crop_UK.rename(columns = {'Value':'Tonnes_Yield'}, inplace = True)
@@ -303,64 +303,64 @@ df_crop_UK.rename(columns = {'Year':'year'}, inplace = True)
 df_crop_UK
 
 
-# In[65]:
+# In[350]:
 
 
 df_crop_UK = df_crop_UK.dropna()
 
 
-# In[66]:
+# In[351]:
 
 
 df_weather_UK = pd.read_csv("MET Office Weather Data.csv")
 df_weather_UK
 
 
-# In[67]:
+# In[352]:
 
 
 df_weather_UK.info()
 
 
-# In[68]:
+# In[353]:
 
 
 print(df_weather_UK.columns)
 
 
-# In[69]:
+# In[354]:
 
 
 df_weather_UK= df_weather_UK.drop([ 'sun','af', 'station','month'], axis = 1)
 df_weather_UK
 
 
-# In[70]:
+# In[355]:
 
 
 df_weather_UK = df_weather_UK.dropna()
 
 
-# In[71]:
+# In[356]:
 
 
 for col in df_weather_UK:
     print(df_weather_UK["year"].unique())
 
 
-# In[72]:
+# In[357]:
 
 
 df_weather_UK.year = df_weather_UK.year.astype(int)
 
 
-# In[73]:
+# In[358]:
 
 
 df_weather_UK['mean_temp'] = df_weather_UK[['tmax', 'tmin']].mean(axis=1)
 
 
-# In[74]:
+# In[359]:
 
 
 df_grp_rain_UK = df_weather_UK
@@ -368,7 +368,7 @@ df_grp_rain_UK = df_grp_rain_UK.groupby(['year'])['rain'].sum().reset_index()
 df_grp_rain_UK
 
 
-# In[75]:
+# In[360]:
 
 
 df_grp_temp_UK = df_weather_UK
@@ -376,21 +376,21 @@ df_grp_temp_UK = df_grp_temp_UK.groupby(['year'])['mean_temp'].mean().reset_inde
 df_grp_temp_UK
 
 
-# In[76]:
+# In[361]:
 
 
 df_rain_temp_UK=df_grp_temp_UK.merge(df_grp_rain_UK, on='year', how='left') 
 df_rain_temp_UK
 
 
-# In[77]:
+# In[362]:
 
 
 df_ML_UK = df_crop_UK.merge(df_rain_temp_UK, on='year', how='left')
 df_ML_UK
 
 
-# In[78]:
+# In[363]:
 
 
 df_ML_UK.rename(columns = {'Item':'Crop_Type'}, inplace = True)
@@ -398,14 +398,14 @@ df_ML_UK.rename(columns = {'Item':'Crop_Type'}, inplace = True)
 
 # <b>Data prerp Spain</b>
 
-# In[15]:
+# In[364]:
 
 
 df_crop_Spain = pd.read_csv("FAOSTAT Spain Crop data.csv")
 df_crop_Spain
 
 
-# In[16]:
+# In[365]:
 
 
 df_crop_Spain = df_crop_Spain.drop(['Domain Code', 'Domain', 'Area Code (FAO)', 'Area', 'Element Code',
@@ -414,21 +414,21 @@ df_crop_Spain = df_crop_Spain.drop(['Domain Code', 'Domain', 'Area Code (FAO)', 
 df_crop_Spain = df_crop_Spain.dropna()
 
 
-# In[17]:
+# In[366]:
 
 
 df_crop_Spain.rename(columns = {'Value':'Tonnes_Yield'}, inplace = True)
 df_crop_Spain.rename(columns = {'Year':'year'}, inplace = True)
 
 
-# In[18]:
+# In[367]:
 
 
 df_weather_Spain = pd.read_csv("Spain weather data.csv")
 df_weather_Spain
 
 
-# In[19]:
+# In[368]:
 
 
 df_weather_Spain.rename(columns = {'Annual Mean':'mean_temp'}, inplace = True)
@@ -436,14 +436,14 @@ df_weather_Spain.rename(columns = {'Category':'year'}, inplace = True)
 df_weather_Spain = df_weather_Spain.drop(['5-yr smooth'], axis = 1)
 
 
-# In[20]:
+# In[369]:
 
 
 df_rain_Spain = pd.read_csv("Spain rain data.csv")
 df_rain_Spain
 
 
-# In[21]:
+# In[370]:
 
 
 df_rain_Spain.rename(columns = {'Annual Mean':'mean_rain'}, inplace = True)
@@ -451,26 +451,26 @@ df_rain_Spain.rename(columns = {'Category':'year'}, inplace = True)
 df_rain_Spain = df_rain_Spain.drop(['5-yr smooth'], axis = 1)
 
 
-# In[22]:
+# In[371]:
 
 
 df_rain_temp_Spain=df_rain_Spain.merge(df_weather_Spain, on='year', how='left') 
 
 
-# In[23]:
+# In[372]:
 
 
 df_ML_Spain =df_crop_Spain.merge(df_rain_temp_Spain, on='year', how='left') 
 df_ML_Spain
 
 
-# In[24]:
+# In[373]:
 
 
 df_ML_Spain.info()
 
 
-# In[25]:
+# In[374]:
 
 
 df_ML_Spain.rename(columns = {'Item':'Crop_Type'}, inplace = True)
@@ -478,22 +478,22 @@ df_ML_Spain.rename(columns = {'Item':'Crop_Type'}, inplace = True)
 
 # <b>Statistics</b>
 
-# In[82]:
+# In[375]:
 
 
 ##Ireland decribe
 df_ML1.describe()
 
 
-# In[83]:
+# In[376]:
 
 
-df_ML_UK.describe()
+df_ML_Spain.describe()
 
 
 # Shapiro-Wilk Tests
 
-# In[81]:
+# In[377]:
 
 
 #Shapiro-Wilk Test for Ireland Yield
@@ -507,11 +507,10 @@ else:
     print('Probably not Gaussian')
 
 
-# In[85]:
+# In[378]:
 
 
 #Shapiro-Wilk Test for Ireland temp
-from scipy.stats import shapiro
 data = df_ML1['mean_temp']
 stat, p = shapiro(data)
 print('stat=%.3f, p=%.3f' % (stat, p))
@@ -521,12 +520,11 @@ else:
     print('Probably not Gaussian')
 
 
-# In[84]:
+# In[379]:
 
 
-#Shapiro-Wilk Test for UK Yield
-from scipy.stats import shapiro
-data = df_ML_UK['Tonnes_Yield']
+#Shapiro-Wilk Test for Spain Yield
+data = df_ML_Spain['Tonnes_Yield']
 stat, p = shapiro(data)
 print('stat=%.3f, p=%.3f' % (stat, p))
 if p > 0.05:
@@ -535,12 +533,11 @@ else:
     print('Probably not Gaussian')
 
 
-# In[86]:
+# In[380]:
 
 
-#Shapiro-Wilk Test for UK temp
-from scipy.stats import shapiro
-data = df_ML_UK['mean_temp']
+#Shapiro-Wilk Test for Spain temp
+data = df_ML_Spain['mean_temp']
 stat, p = shapiro(data)
 print('stat=%.3f, p=%.3f' % (stat, p))
 if p > 0.05:
@@ -549,10 +546,158 @@ else:
     print('Probably not Gaussian')
 
 
-# In[ ]:
+# Spearman’s Rank Correlation
+
+# In[381]:
 
 
+#Spearman’s Rank Correlation for Ireland Yield vs Rain
+from scipy.stats import spearmanr
+data1 = df_ML1['Yield_000_Tonnes']
+data2 = df_ML1['total_rain']
+stat, p = spearmanr(data1, data2)
+print('stat=%.3f, p=%.3f' % (stat, p))
+if p > 0.05:
+    print('Probably independent')
+else:
+    print('Probably dependent')
 
+
+# In[382]:
+
+
+#Spearman’s Rank Correlation for Ireland Yield vs temp
+from scipy.stats import spearmanr
+data1 = df_ML1['Yield_000_Tonnes']
+data2 = df_ML1['mean_temp']
+stat, p = spearmanr(data1, data2)
+print('stat=%.3f, p=%.3f' % (stat, p))
+if p > 0.05:
+    print('Probably independent')
+else:
+    print('Probably dependent')
+
+
+# In[383]:
+
+
+#Spearman’s Rank Correlation for Spain Yield vs Rain
+from scipy.stats import spearmanr
+data1 = df_ML_Spain['Tonnes_Yield']
+data2 = df_ML_Spain['mean_rain']
+stat, p = spearmanr(data1, data2)
+print('stat=%.3f, p=%.3f' % (stat, p))
+if p > 0.05:
+    print('Probably independent')
+else:
+    print('Probably dependent')
+
+
+# In[384]:
+
+
+#Spearman’s Rank Correlation for Ireland Yield vs temp
+from scipy.stats import spearmanr
+data1 = df_ML_Spain['Tonnes_Yield']
+data2 = df_ML_Spain['mean_temp']
+stat, p = spearmanr(data1, data2)
+print('stat=%.3f, p=%.3f' % (stat, p))
+if p > 0.05:
+    print('Probably independent')
+else:
+    print('Probably dependent')
+
+
+# Chi-square 
+
+# In[390]:
+
+
+df_stats_Ireland = df_ML1.copy() #must use .copy to avoid parsing changes to original df
+
+
+# In[399]:
+
+
+df_stats_Ireland.drop(['Type of Crop','Statistic', 'Year','UNIT'], axis=1, inplace=True)
+
+
+# In[400]:
+
+
+df_stats_Ireland
+
+
+# In[401]:
+
+
+# Chi-Squared Test Ireland
+from scipy.stats import chi2_contingency
+table = df_stats_Ireland
+stat, p, dof, expected = chi2_contingency(table)
+print('stat=%.3f, p=%.3f' % (stat, p))
+if p > 0.05:
+    print('Probably independent')
+else:
+    print('Probably dependent')
+
+
+# In[402]:
+
+
+df_stats_Spain = df_ML_Spain.copy() 
+
+
+# In[403]:
+
+
+df_stats_Spain.drop(['Crop_Type','year'], axis=1, inplace=True)
+
+
+# In[404]:
+
+
+# Chi-Squared Test Spain
+from scipy.stats import chi2_contingency
+table = df_stats_Spain
+stat, p, dof, expected = chi2_contingency(table)
+print('stat=%.3f, p=%.3f' % (stat, p))
+if p > 0.05:
+    print('Probably independent')
+else:
+    print('Probably dependent')
+
+
+# Mann-Whitney U Test
+
+# In[405]:
+
+
+#Mann-Whitney U Test yield for Ireland vs Spain
+from scipy.stats import mannwhitneyu
+data1 = df_ML_Spain['Tonnes_Yield']
+data2 = df_ML1['Yield_000_Tonnes']
+stat, p = mannwhitneyu(data1, data2)
+print('stat=%.3f, p=%.3f' % (stat, p))
+if p > 0.05:
+    print('Probably the same distribution')
+else:
+    print('Probably different distributions')
+
+
+# In[406]:
+
+
+#Mann-Whitney U Test temp for Ireland vs Spain
+from scipy.stats import mannwhitneyu
+data1 = df_ML_Spain['mean_temp']
+data2 = df_ML1['mean_temp']
+stat, p = mannwhitneyu(data1, data2)
+print('stat=%.3f, p=%.3f' % (stat, p))
+if p > 0.05:
+    print('Probably the same distribution')
+else:
+    print('Probably different distributions')
 
 
 # In[ ]:
