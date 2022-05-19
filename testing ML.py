@@ -494,6 +494,13 @@ df_ML_Spain.info()
 df_ML_Spain.rename(columns = {'Item':'Crop_Type'}, inplace = True)
 
 
+# In[397]:
+
+
+for col in df_ML_Spain:
+    print(df_ML_Spain["year"].unique())
+
+
 # <b>Statistics</b>
 
 # In[375]:
@@ -885,6 +892,12 @@ df_visualization = pd.concat(frames)
 df_visualization
 
 
+# In[402]:
+
+
+df_visualization.info()
+
+
 # In[358]:
 
 
@@ -893,28 +906,72 @@ df_vis_year=df_visualization.groupby(['Country','year']).agg({'Tonnes_Yield':'su
 
 # Comparison
 
-# In[359]:
+# In[378]:
 
 
 #comparing crop yields
 import plotly.express as px
 fig = px.line(df_vis_year, x="year", y="Tonnes_Yield", color ="Country", title='Yield compare')
+fig.update_traces(mode="markers+lines")
+fig.update_xaxes(showspikes=True)
+fig.update_yaxes(showspikes=True)
 fig.show()
 
 
-# In[362]:
+# In[405]:
+
+
+#comparing data up to 1987 intereactive
+df_vis_year_2007 = df_vis_year.copy()
+df_vis_year_2007 = df_vis_year_2007.drop(df_vis_year_2007[df_vis_year_2007.year > 2007].index)
+df_vis_year_2007 = df_vis_year_2007.drop(df_vis_year_2007[df_vis_year_2007.year < 1985].index)
+df = px.data.gapminder()
+fig = px.bar(df_vis_year_2007, x="Country", y="Tonnes_Yield", animation_frame="year", animation_group="Country",
+            color="Country", hover_name="Country"
+           )
+
+fig["layout"].pop("updatemenus") # optional, drop animation buttons
+fig.show()
+
+
+# In[379]:
 
 
 #comparing mean temp
 fig = px.line(df_vis_year, x="year", y="mean_temp", color ="Country", title='Temperature compare')
+fig.update_traces(mode="markers+lines")
+fig.update_xaxes(showspikes=True)
+fig.update_yaxes(showspikes=True)
 fig.show()
 
 
-# In[363]:
+# In[380]:
 
 
 #Rain comparison
 fig = px.line(df_vis_year, x="year", y="mean_rain", color ="Country", title='Rain compare')
+fig.update_traces(mode="markers+lines")
+fig.update_xaxes(showspikes=True)
+fig.update_yaxes(showspikes=True)
+fig.show()
+
+
+# In[368]:
+
+
+#cmparing yield+drill down into type of crop
+fig = px.bar(df_visualization, x="Country", y="Tonnes_Yield", color="Crop_Type", title="comparison with crop type")
+fig.show()
+
+
+# In[381]:
+
+
+#histfunc='avg',
+fig = px.histogram(df_vis_year, x="year", y="Tonnes_Yield",
+             color='Country', barmode='group',
+             
+             height=400)
 fig.show()
 
 
