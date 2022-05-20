@@ -44,25 +44,25 @@ warnings.filterwarnings('ignore')
 
 # <b>Data Prerp for Ireland</b>
 
-# In[229]:
+# In[2]:
 
 
 df_crop = pd.read_csv("Crop Yield.csv")
 
 
-# In[230]:
+# In[3]:
 
 
 df_crop
 
 
-# In[231]:
+# In[4]:
 
 
 df_crop.info()
 
 
-# In[232]:
+# In[5]:
 
 
 #remove area under crop
@@ -70,7 +70,7 @@ for col in df_crop:
     print(df_crop["Statistic"].unique())
 
 
-# In[233]:
+# In[6]:
 
 
 ####remove 000 hecatres and remove tonnes
@@ -78,31 +78,31 @@ for col in df_crop:
     print(df_crop["UNIT"].unique())
 
 
-# In[234]:
+# In[7]:
 
 
 df_crop["Type of Crop"].unique()
 
 
-# In[235]:
+# In[8]:
 
 
 df_crop.rename(columns = {'Type of Crop':'Type_of_Crop'}, inplace = True)
 
 
-# In[236]:
+# In[9]:
 
 
 df_crop = df_crop[~df_crop.Type_of_Crop.str.contains("Total wheat, oats and barley")]
 
 
-# In[237]:
+# In[10]:
 
 
 df_crop['Type_of_Crop'].nunique()
 
 
-# In[238]:
+# In[11]:
 
 
 df_crop = df_crop[~df_crop.Statistic.str.contains("Area under Crops")]
@@ -110,38 +110,38 @@ df_crop = df_crop[~df_crop.Statistic.str.contains("Crop Yield per Hectare")]
 df_crop = df_crop[~df_crop.Statistic.str.contains("Unit")]
 
 
-# In[239]:
+# In[12]:
 
 
 df_crop.rename(columns = {'VALUE':'Yield_000_Tonnes'}, inplace = True)
 
 
-# In[240]:
+# In[13]:
 
 
 df_crop = df_crop.dropna()
 
 
-# In[241]:
+# In[14]:
 
 
 df_temp = pd.read_csv("Temperature Data.csv")
 
 
-# In[242]:
+# In[15]:
 
 
 df_temp
 
 
-# In[243]:
+# In[16]:
 
 
 for col in df_temp:
     print(df_temp["Statistic"].unique())
 
 
-# In[244]:
+# In[17]:
 
 
 df_temp = df_temp[~df_temp.Statistic.str.contains("Average Maximum Temperature")]
@@ -150,13 +150,13 @@ df_temp = df_temp[~df_temp.Statistic.str.contains("Highest Temperature")]
 df_temp = df_temp[~df_temp.Statistic.str.contains("Lowest Temperature")]
 
 
-# In[245]:
+# In[18]:
 
 
 df_temp = df_temp.dropna()
 
 
-# In[246]:
+# In[19]:
 
 
 df_temp['Month'] = df_temp['Month'].str.replace('M','/')
@@ -164,31 +164,31 @@ df_temp['Month'] = pd.to_datetime(df_temp['Month'])
 df_temp['Month'] = df_temp['Month'].dt.strftime('%Y')
 
 
-# In[247]:
+# In[20]:
 
 
 df_grp_temp = df_temp.groupby(['Month'])['VALUE'].mean().reset_index()
 
 
-# In[248]:
+# In[21]:
 
 
 df_grp_temp
 
 
-# In[249]:
+# In[22]:
 
 
 df_grp_temp.rename(columns = {'Month':'Year','VALUE':'mean_temp'}, inplace = True)
 
 
-# In[250]:
+# In[23]:
 
 
 df_grp_temp['Year'] = df_grp_temp['Year'].astype(np.int64)
 
 
-# In[251]:
+# In[24]:
 
 
 ##merging
@@ -196,45 +196,45 @@ df_grp_temp['Year'] = df_grp_temp['Year'].astype(np.int64)
 df_crop_temp=df_crop.merge(df_grp_temp, on='Year', how='left') 
 
 
-# In[252]:
+# In[25]:
 
 
 df_crop_temp
 
 
-# In[253]:
+# In[26]:
 
 
 df_crop_temp.info()
 
 
-# In[254]:
+# In[27]:
 
 
 df_rain = pd.read_csv("Rain Data.csv")
 
 
-# In[255]:
+# In[28]:
 
 
 df_rain
 
 
-# In[256]:
+# In[29]:
 
 
 for col in df_rain:
     print(df_rain["Statistic"].unique())
 
 
-# In[257]:
+# In[30]:
 
 
 df_rain = df_rain[~df_rain.Statistic.str.contains("Most Rainfall in a Day")]
 df_rain = df_rain[~df_rain.Statistic.str.contains("Raindays (0.2mm or More)")]
 
 
-# In[258]:
+# In[31]:
 
 
 df_rain['Month'] = df_rain['Month'].str.replace('M','/')
@@ -242,49 +242,49 @@ df_rain['Month'] = pd.to_datetime(df_rain['Month'])
 df_rain['Month'] = df_rain['Month'].dt.strftime('%Y')
 
 
-# In[259]:
+# In[32]:
 
 
 df_grp_rain = df_rain.groupby(['Month'])['VALUE'].sum().reset_index()
 
 
-# In[260]:
+# In[33]:
 
 
 df_grp_rain.rename(columns = {'Month':'Year','VALUE':'total_rain'}, inplace = True)##rename to tatal rain
 
 
-# In[261]:
+# In[34]:
 
 
 df_grp_rain['Year'] = df_grp_rain['Year'].astype(np.int64)
 
 
-# In[262]:
+# In[35]:
 
 
 df_grp_rain
 
 
-# In[263]:
+# In[36]:
 
 
 df_crop_temp_rain=df_crop_temp.merge(df_grp_rain, on='Year', how='left')
 
 
-# In[264]:
+# In[37]:
 
 
 df_crop_temp_rain
 
 
-# In[304]:
+# In[38]:
 
 
 df_crop_temp_rain.describe()
 
 
-# In[265]:
+# In[39]:
 
 
 df_ML1 = df_crop_temp_rain.copy()
@@ -292,20 +292,20 @@ df_ML1 = df_crop_temp_rain.copy()
 
 # <b>Data prerp UK</b>
 
-# In[266]:
+# In[40]:
 
 
 df_crop_UK = pd.read_csv("FAOSTAT UK crop data.csv")
 df_crop_UK
 
 
-# In[267]:
+# In[41]:
 
 
 print(df_crop_UK.columns)
 
 
-# In[268]:
+# In[42]:
 
 
 df_crop_UK = df_crop_UK.drop(['Domain Code', 'Domain', 'Area Code (FAO)', 'Area', 'Element Code',
@@ -313,7 +313,7 @@ df_crop_UK = df_crop_UK.drop(['Domain Code', 'Domain', 'Area Code (FAO)', 'Area'
        'Flag', 'Flag Description'], axis = 1)
 
 
-# In[269]:
+# In[43]:
 
 
 df_crop_UK.rename(columns = {'Value':'Tonnes_Yield'}, inplace = True)
@@ -321,64 +321,64 @@ df_crop_UK.rename(columns = {'Year':'year'}, inplace = True)
 df_crop_UK
 
 
-# In[270]:
+# In[44]:
 
 
 df_crop_UK = df_crop_UK.dropna()
 
 
-# In[271]:
+# In[45]:
 
 
 df_weather_UK = pd.read_csv("MET Office Weather Data.csv")
 df_weather_UK
 
 
-# In[272]:
+# In[46]:
 
 
 df_weather_UK.info()
 
 
-# In[273]:
+# In[47]:
 
 
 print(df_weather_UK.columns)
 
 
-# In[274]:
+# In[48]:
 
 
 df_weather_UK= df_weather_UK.drop([ 'sun','af', 'station','month'], axis = 1)
 df_weather_UK
 
 
-# In[275]:
+# In[49]:
 
 
 df_weather_UK = df_weather_UK.dropna()
 
 
-# In[276]:
+# In[50]:
 
 
 for col in df_weather_UK:
     print(df_weather_UK["year"].unique())
 
 
-# In[277]:
+# In[51]:
 
 
 df_weather_UK.year = df_weather_UK.year.astype(int)
 
 
-# In[278]:
+# In[52]:
 
 
 df_weather_UK['mean_temp'] = df_weather_UK[['tmax', 'tmin']].mean(axis=1)
 
 
-# In[279]:
+# In[53]:
 
 
 df_grp_rain_UK = df_weather_UK
@@ -386,7 +386,7 @@ df_grp_rain_UK = df_grp_rain_UK.groupby(['year'])['rain'].sum().reset_index()
 df_grp_rain_UK
 
 
-# In[280]:
+# In[54]:
 
 
 df_grp_temp_UK = df_weather_UK
@@ -394,21 +394,21 @@ df_grp_temp_UK = df_grp_temp_UK.groupby(['year'])['mean_temp'].mean().reset_inde
 df_grp_temp_UK
 
 
-# In[281]:
+# In[55]:
 
 
 df_rain_temp_UK=df_grp_temp_UK.merge(df_grp_rain_UK, on='year', how='left') 
 df_rain_temp_UK
 
 
-# In[282]:
+# In[56]:
 
 
 df_ML_UK = df_crop_UK.merge(df_rain_temp_UK, on='year', how='left')
 df_ML_UK
 
 
-# In[283]:
+# In[57]:
 
 
 df_ML_UK.rename(columns = {'Item':'Crop_Type'}, inplace = True)
@@ -416,14 +416,14 @@ df_ML_UK.rename(columns = {'Item':'Crop_Type'}, inplace = True)
 
 # <b>Data prerp Spain</b>
 
-# In[284]:
+# In[58]:
 
 
 df_crop_Spain = pd.read_csv("FAOSTAT Spain Crop data.csv")
 df_crop_Spain
 
 
-# In[285]:
+# In[59]:
 
 
 df_crop_Spain = df_crop_Spain.drop(['Domain Code', 'Domain', 'Area Code (FAO)', 'Area', 'Element Code',
@@ -432,21 +432,21 @@ df_crop_Spain = df_crop_Spain.drop(['Domain Code', 'Domain', 'Area Code (FAO)', 
 df_crop_Spain = df_crop_Spain.dropna()
 
 
-# In[286]:
+# In[60]:
 
 
 df_crop_Spain.rename(columns = {'Value':'Tonnes_Yield'}, inplace = True)
 df_crop_Spain.rename(columns = {'Year':'year'}, inplace = True)
 
 
-# In[287]:
+# In[61]:
 
 
 df_weather_Spain = pd.read_csv("Spain weather data.csv")
 df_weather_Spain
 
 
-# In[288]:
+# In[62]:
 
 
 df_weather_Spain.rename(columns = {'Annual Mean':'mean_temp'}, inplace = True)
@@ -454,14 +454,14 @@ df_weather_Spain.rename(columns = {'Category':'year'}, inplace = True)
 df_weather_Spain = df_weather_Spain.drop(['5-yr smooth'], axis = 1)
 
 
-# In[289]:
+# In[63]:
 
 
 df_rain_Spain = pd.read_csv("Spain rain data.csv")
 df_rain_Spain
 
 
-# In[290]:
+# In[64]:
 
 
 df_rain_Spain.rename(columns = {'Annual Mean':'mean_rain'}, inplace = True)
@@ -469,32 +469,38 @@ df_rain_Spain.rename(columns = {'Category':'year'}, inplace = True)
 df_rain_Spain = df_rain_Spain.drop(['5-yr smooth'], axis = 1)
 
 
-# In[291]:
+# In[65]:
 
 
 df_rain_temp_Spain=df_rain_Spain.merge(df_weather_Spain, on='year', how='left') 
 
 
-# In[292]:
+# In[66]:
 
 
 df_ML_Spain =df_crop_Spain.merge(df_rain_temp_Spain, on='year', how='left') 
 df_ML_Spain
 
 
-# In[293]:
+# In[67]:
 
 
 df_ML_Spain.info()
 
 
-# In[294]:
+# In[68]:
 
 
 df_ML_Spain.rename(columns = {'Item':'Crop_Type'}, inplace = True)
 
 
-# In[397]:
+# In[152]:
+
+
+df_ML_Spain['Crop_Type'].nunique()
+
+
+# In[69]:
 
 
 for col in df_ML_Spain:
@@ -503,14 +509,14 @@ for col in df_ML_Spain:
 
 # <b>Statistics</b>
 
-# In[375]:
+# In[70]:
 
 
 ##Ireland decribe
 df_ML1.describe()
 
 
-# In[376]:
+# In[71]:
 
 
 df_ML_Spain.describe()
@@ -518,7 +524,7 @@ df_ML_Spain.describe()
 
 # Shapiro-Wilk Tests
 
-# In[377]:
+# In[72]:
 
 
 #Shapiro-Wilk Test for Ireland Yield
@@ -532,7 +538,7 @@ else:
     print('Probably not Gaussian')
 
 
-# In[378]:
+# In[73]:
 
 
 #Shapiro-Wilk Test for Ireland temp
@@ -545,7 +551,7 @@ else:
     print('Probably not Gaussian')
 
 
-# In[379]:
+# In[74]:
 
 
 #Shapiro-Wilk Test for Spain Yield
@@ -558,7 +564,7 @@ else:
     print('Probably not Gaussian')
 
 
-# In[380]:
+# In[75]:
 
 
 #Shapiro-Wilk Test for Spain temp
@@ -573,7 +579,7 @@ else:
 
 # Spearman’s Rank Correlation
 
-# In[381]:
+# In[76]:
 
 
 #Spearman’s Rank Correlation for Ireland Yield vs Rain
@@ -588,7 +594,7 @@ else:
     print('Probably dependent')
 
 
-# In[382]:
+# In[77]:
 
 
 #Spearman’s Rank Correlation for Ireland Yield vs temp
@@ -603,7 +609,7 @@ else:
     print('Probably dependent')
 
 
-# In[383]:
+# In[78]:
 
 
 #Spearman’s Rank Correlation for Spain Yield vs Rain
@@ -618,7 +624,7 @@ else:
     print('Probably dependent')
 
 
-# In[384]:
+# In[79]:
 
 
 #Spearman’s Rank Correlation for Ireland Yield vs temp
@@ -635,25 +641,25 @@ else:
 
 # Chi-square 
 
-# In[390]:
+# In[80]:
 
 
 df_stats_Ireland = df_ML1.copy() #must use .copy to avoid parsing changes to original df
 
 
-# In[399]:
+# In[83]:
 
 
-df_stats_Ireland.drop(['Type of Crop','Statistic', 'Year','UNIT'], axis=1, inplace=True)
+df_stats_Ireland.drop(['Type_of_Crop','Statistic', 'Year','UNIT'], axis=1, inplace=True)
 
 
-# In[400]:
+# In[84]:
 
 
 df_stats_Ireland
 
 
-# In[401]:
+# In[85]:
 
 
 # Chi-Squared Test Ireland
@@ -667,19 +673,19 @@ else:
     print('Probably dependent')
 
 
-# In[402]:
+# In[86]:
 
 
 df_stats_Spain = df_ML_Spain.copy() 
 
 
-# In[403]:
+# In[87]:
 
 
 df_stats_Spain.drop(['Crop_Type','year'], axis=1, inplace=True)
 
 
-# In[404]:
+# In[88]:
 
 
 # Chi-Squared Test Spain
@@ -695,7 +701,7 @@ else:
 
 # Mann-Whitney U Test
 
-# In[405]:
+# In[89]:
 
 
 #Mann-Whitney U Test yield for Ireland vs Spain
@@ -710,7 +716,7 @@ else:
     print('Probably different distributions')
 
 
-# In[406]:
+# In[90]:
 
 
 #Mann-Whitney U Test temp for Ireland vs Spain
@@ -727,7 +733,7 @@ else:
 
 # Kruskal-Wallis H Test
 
-# In[408]:
+# In[91]:
 
 
 # Kruskal-Wallis H Test yield Ireland vs Spain
@@ -742,7 +748,7 @@ else:
     print('Probably different distributions')
 
 
-# In[409]:
+# In[92]:
 
 
 # Kruskal-Wallis H Test temp Ireland vs Spain
@@ -759,7 +765,7 @@ else:
 
 # <b>Visualzation</b>
 
-# In[320]:
+# In[93]:
 
 
 df_vis_IRL = df_ML1.copy()
@@ -767,118 +773,118 @@ df_vis_SPA = df_ML_Spain.copy()
 df_vis_UK = df_ML_UK.copy()
 
 
-# In[334]:
+# In[94]:
 
 
 df_vis_IRL
 
 
-# In[322]:
+# In[95]:
 
 
 df_vis_IRL.rename(columns = {'Yield_000_Tonnes':'Tonnes_Yield'}, inplace = True)
 df_vis_IRL.rename(columns = {'Type_of_Crop':'Crop_Type'}, inplace = True)
 
 
-# In[323]:
+# In[96]:
 
 
 df_vis_IRL.insert(0,'Country','Ireland')
 
 
-# In[324]:
+# In[97]:
 
 
 df_vis_IRL['Tonnes_Yield'] = df_vis_IRL['Tonnes_Yield'].apply(lambda x: x*1000)
 
 
-# In[325]:
+# In[98]:
 
 
 df_vis_IRL.drop(['Statistic','UNIT'], axis=1, inplace=True)
 
 
-# In[326]:
+# In[99]:
 
 
 #df_vis_IRL['total_rain'] = df_vis_IRL['total_rain'].apply(lambda x:/22) #dividing by 22 to get mean (max year 2007- min year1985)
 df_vis_IRL['total_rain'] = df_vis_IRL['total_rain'].div(22).round(2)
 
 
-# In[327]:
+# In[100]:
 
 
 df_vis_IRL.rename(columns = {'total_rain':'mean_rain'}, inplace = True)
 
 
-# In[333]:
+# In[101]:
 
 
 df_vis_IRL.rename(columns = {'Year':'year'}, inplace = True)
 
 
-# In[336]:
+# In[102]:
 
 
 df_vis_SPA
 
 
-# In[329]:
+# In[103]:
 
 
 df_vis_SPA.insert(0,'Country','Spain')
 
 
-# In[332]:
+# In[104]:
 
 
 cols = list(df_vis_SPA.columns.values)
 cols
 
 
-# In[335]:
+# In[105]:
 
 
 df_vis_SPA = df_vis_SPA[['Country','year', 'Crop_Type', 'Tonnes_Yield','mean_temp', 'mean_rain']]
 
 
-# In[340]:
+# In[106]:
 
 
 df_vis_UK 
 
 
-# In[338]:
+# In[107]:
 
 
 df_vis_UK.describe()
 
 
-# In[339]:
+# In[108]:
 
 
 df_vis_UK['rain'] = df_vis_UK['rain'].div(59).round(2) #finding mean same as above
 
 
-# In[341]:
+# In[109]:
 
 
 df_vis_UK.rename(columns = {'rain':'mean_rain'}, inplace = True)
 
 
-# In[343]:
+# In[110]:
 
 
 df_vis_UK.insert(0,'Country','United Kingdom')
 
 
-# In[344]:
+# In[111]:
 
 
 df_vis_UK = df_vis_UK[['Country','year', 'Crop_Type', 'Tonnes_Yield','mean_temp', 'mean_rain']]
 
 
-# In[356]:
+# In[112]:
 
 
 ###merging###
@@ -886,45 +892,51 @@ frames = [df_vis_IRL, df_vis_UK, df_vis_SPA]
 df_visualization = pd.concat(frames)
 
 
-# In[360]:
+# In[113]:
 
 
 df_visualization
 
 
-# In[402]:
+# In[114]:
 
 
 df_visualization.info()
 
 
-# In[358]:
+# In[115]:
 
 
 df_vis_year=df_visualization.groupby(['Country','year']).agg({'Tonnes_Yield':'sum', 'mean_temp':'mean','mean_rain':'mean'}).round(2).reset_index()
 
 
+# In[116]:
+
+
+#removing any year bellow 1985 and above 2007
+df_vis_year_2007 = df_vis_year.copy()
+df_vis_year_2007 = df_vis_year_2007.drop(df_vis_year_2007[df_vis_year_2007.year > 2007].index)
+df_vis_year_2007 = df_vis_year_2007.drop(df_vis_year_2007[df_vis_year_2007.year < 1985].index)
+
+
 # Comparison
 
-# In[378]:
+# In[117]:
 
 
 #comparing crop yields
 import plotly.express as px
-fig = px.line(df_vis_year, x="year", y="Tonnes_Yield", color ="Country", title='Yield compare')
+fig = px.line(df_vis_year_2007, x="year", y="Tonnes_Yield", color ="Country", title='Yield compare')
 fig.update_traces(mode="markers+lines")
 fig.update_xaxes(showspikes=True)
 fig.update_yaxes(showspikes=True)
 fig.show()
 
 
-# In[405]:
+# In[118]:
 
 
-#comparing data up to 1987 intereactive
-df_vis_year_2007 = df_vis_year.copy()
-df_vis_year_2007 = df_vis_year_2007.drop(df_vis_year_2007[df_vis_year_2007.year > 2007].index)
-df_vis_year_2007 = df_vis_year_2007.drop(df_vis_year_2007[df_vis_year_2007.year < 1985].index)
+#comparing data up to intereactive
 df = px.data.gapminder()
 fig = px.bar(df_vis_year_2007, x="Country", y="Tonnes_Yield", animation_frame="year", animation_group="Country",
             color="Country", hover_name="Country"
@@ -934,29 +946,29 @@ fig["layout"].pop("updatemenus") # optional, drop animation buttons
 fig.show()
 
 
-# In[379]:
+# In[119]:
 
 
 #comparing mean temp
-fig = px.line(df_vis_year, x="year", y="mean_temp", color ="Country", title='Temperature compare')
+fig = px.line(df_vis_year_2007, x="year", y="mean_temp", color ="Country", title='Temperature compare')
 fig.update_traces(mode="markers+lines")
 fig.update_xaxes(showspikes=True)
 fig.update_yaxes(showspikes=True)
 fig.show()
 
 
-# In[380]:
+# In[120]:
 
 
 #Rain comparison
-fig = px.line(df_vis_year, x="year", y="mean_rain", color ="Country", title='Rain compare')
+fig = px.line(df_vis_year_2007, x="year", y="mean_rain", color ="Country", title='Rain compare')
 fig.update_traces(mode="markers+lines")
 fig.update_xaxes(showspikes=True)
 fig.update_yaxes(showspikes=True)
 fig.show()
 
 
-# In[368]:
+# In[121]:
 
 
 #cmparing yield+drill down into type of crop
@@ -964,11 +976,11 @@ fig = px.bar(df_visualization, x="Country", y="Tonnes_Yield", color="Crop_Type",
 fig.show()
 
 
-# In[381]:
+# In[122]:
 
 
 #histfunc='avg',
-fig = px.histogram(df_vis_year, x="year", y="Tonnes_Yield",
+fig = px.histogram(df_vis_year_2007, x="year", y="Tonnes_Yield",
              color='Country', barmode='group',
              
              height=400)
@@ -977,31 +989,31 @@ fig.show()
 
 # <h1>Machine Learning</h1>
 
-# In[207]:
+# In[123]:
 
 
 df_ML1 = df_crop_temp_rain.copy()
 
 
-# In[208]:
+# In[124]:
 
 
 df_ML1.drop(['Statistic', 'Year','UNIT'], axis=1, inplace=True)
 
 
-# In[209]:
+# In[125]:
 
 
 df_ML1 
 
 
-# In[210]:
+# In[126]:
 
 
 df_ML1.info()
 
 
-# In[211]:
+# In[127]:
 
 
 df_dum = pd.get_dummies(df_ML1 ['Type_of_Crop'])
@@ -1013,7 +1025,7 @@ X['Type_of_Crop'] = y
 X
 
 
-# In[212]:
+# In[128]:
 
 
 #seperating and preparing the dataset for ML modeling
@@ -1027,7 +1039,7 @@ X_train, X_test, y_train, y_test = train_test_split(X_new,y, test_size = 0.3, ra
 #https://stackoverflow.com/questions/42191717/scikit-learn-random-state-in-splitting-dataset
 
 
-# In[217]:
+# In[129]:
 
 
 # function for evaluation metrics precision, recall, f1 etc
@@ -1089,7 +1101,7 @@ def modelEvaluation(model,predictions, y_test_set, model_name):
     return results
 
 
-# In[218]:
+# In[130]:
 
 
 ###Tried to apply gridsearchCV to get params, to stop random forest overfitting, but all params that I have tried overfit
@@ -1114,7 +1126,7 @@ def modelEvaluation(model,predictions, y_test_set, model_name):
 #print('test accuracy: ',metrics.accuracy_score(y_train,X_pred))
 
 
-# In[219]:
+# In[131]:
 
 
 #same as above,tried to apply gridsearchCV to get params, to stop random forest overfitting, but all params that I have tried overfit
@@ -1144,7 +1156,7 @@ def modelEvaluation(model,predictions, y_test_set, model_name):
 #print (CV_rfc.best_params_)
 
 
-# In[220]:
+# In[132]:
 
 
 #Logistic Regression model
@@ -1158,7 +1170,7 @@ predictions = lr.predict(X_test)
 results_lr = modelEvaluation(lr,predictions, y_test, "logistic Regression")
 
 
-# In[221]:
+# In[133]:
 
 
 kfold = KFold(n_splits=10)
@@ -1177,7 +1189,7 @@ plt.legend()
 plt.show()
 
 
-# In[222]:
+# In[134]:
 
 
 #Decision Tree Model
@@ -1192,7 +1204,7 @@ prediction = dt.predict(X_test)
 results_mp = modelEvaluation(dt,prediction, y_test,"DecisionTreeClassifier")
 
 
-# In[223]:
+# In[135]:
 
 
 from sklearn.model_selection import cross_validate
@@ -1210,7 +1222,7 @@ plt.legend()
 plt.show()
 
 
-# In[224]:
+# In[136]:
 
 
 rf = RandomForestClassifier(criterion='gini',
@@ -1224,7 +1236,7 @@ predictions = rf.predict(X_test)
 results_rf = modelEvaluation(rf,predictions, y_test, "RandomForestClassifier")
 
 
-# In[225]:
+# In[137]:
 
 
 from sklearn.model_selection import cross_validate
@@ -1242,16 +1254,182 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
+# Machine Learning Spain
+
+# In[145]:
 
 
-###ML UK data####
+df_dum = pd.get_dummies(df_ML_Spain ['Crop_Type'])
+X = df_ML_Spain.drop('Crop_Type', axis = 1) # setting X as independent features appart from Zone which will be our dependant features
+y = df_ML_Spain['Crop_Type'] # setting y as dependent feature Zone
+X = pd.concat([X,df_dum], axis = 1)
+X = X.select_dtypes(exclude=['object'])
+X['Crop_Type'] = y
+X
 
 
-# In[ ]:
+# In[147]:
 
 
+#seperating and preparing the dataset for ML modeling
+#as outlined above our X are the independent features and y is our dependent feature
+X_new = X.drop('Crop_Type', axis = 1)
+y = X['Crop_Type']
 
+# 70/30 split as per texbooks
+X_train, X_test, y_train, y_test = train_test_split(X_new,y, test_size = 0.3, random_state = 42)##removed stratisfy
+#ref for random state
+#https://stackoverflow.com/questions/42191717/scikit-learn-random-state-in-splitting-dataset
+
+
+# In[155]:
+
+
+##running model evaluation defined above for ML1 part
+def modelEvaluation(model,predictions, y_test_set, model_name):
+    #defining modelEvaluation with existing methods/functions from ML libraries
+    kfold = KFold(n_splits=10)
+    #kfold cross validation set to 10 folds
+    # Print model evaluation to predicted result everytime we will call modelEvaluation  
+    start_time = time.time()
+    print("==========",model_name,"==========")
+    print ("\nAccuracy on validation set: {:.4f}".format(accuracy_score(y_test_set, predictions)))
+    print ("Precision on validation set: {:.4f}".format(precision_score(y_test_set, predictions, average='macro')))    
+    print ("Recall on validation set: {:.4f}".format(recall_score(y_test_set, predictions, average='macro')))
+    print ("F1_Score on validation set: {:.4f}".format(f1_score(y_test_set, predictions, average='macro')))
+
+    scores = cross_validate(model, X_test, y_test, cv=kfold, scoring='accuracy')
+    #snipped of code taken from the Udemy lecture notes
+    print ("KFold Cross Validation on validation set: {:.4f}".format(scores['test_score'].mean()))
+    
+    
+    print ("\nClassification report : \n", classification_report(y_test_set, predictions))
+    #printing y_test scores
+    print("="*30)
+    print ("\tConfusion Matrix",)
+    print("="*30)
+    #printing a seperator
+    
+    #defining and making conusion matrix
+    cm = confusion_matrix(y_test_set, predictions)
+    print(cm)
+    #pritnting confusion matrix
+    
+    #plotting the confusion matrix and adding additional % lables
+    #simillar functions exist and can be written for data visualization to add % or data on top of bar plots etc.
+    #concepts taken form bellow+Udemy course mentioned above
+    ##ref https://stackoverflow.com/questions/28931224/adding-value-labels-on-a-matplotlib-bar-chart
+    #ref https://stackoverflow.com/questions/40249943/adding-percentage-labels-to-a-bar-chart-in-ggplot2
+    labels = np.asarray(
+        [
+            ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item / cm.flatten().sum()) for item in cm.flatten()]
+
+        ]
+    ).reshape(103, 103)
+
+    plt.figure(figsize=(16, 16))
+
+    sns.heatmap(cm, annot=labels, fmt="")
+    plt.ylabel("True label")
+    plt.xlabel("Predicted label")
+    plt.show()
+    end = round(time.time()-start_time,3)
+    results = [accuracy_score(y_test_set, predictions),precision_score(y_test_set, predictions, average='macro'),
+              recall_score(y_test_set, predictions, average='macro'),f1_score(y_test_set, predictions, average='macro'),scores['test_score'].mean(),end]
+    return results
+
+
+# In[156]:
+
+
+lr = LogisticRegression()
+lr.fit(X_train, y_train)
+predictions = lr.predict(X_test)
+results_lr = modelEvaluation(lr,predictions, y_test, "logistic Regression")
+
+
+# In[157]:
+
+
+kfold = KFold(n_splits=10)
+
+scores = cross_validate(lr, X_test, y_test, cv=kfold, scoring='accuracy',return_train_score=True)
+print(f"Average Testing Accuracy : {scores['test_score'].mean()}")
+print(f"Testing Accuracy : {scores['test_score']}")
+#using snippet from the function above
+#plotting our results of test vs train
+plt.plot(scores['train_score'] ,label ='training score', marker='o')
+plt.plot(scores['test_score'] ,label ='testing score',marker='o')
+plt.title("Logistic Regression Cross Validation Results")
+plt.xlabel("Cross Validation")
+plt.ylabel("Score")
+plt.legend()
+plt.show()
+
+
+# In[158]:
+
+
+#Decision Tree Model
+dt = DecisionTreeClassifier(criterion='gini',
+                            max_depth=5 ,
+                             min_samples_split=10,
+                             min_samples_leaf=22,
+                             )
+                             
+dt.fit(X_train,y_train)
+prediction = dt.predict(X_test)
+results_mp = modelEvaluation(dt,prediction, y_test,"DecisionTreeClassifier")
+
+
+# In[159]:
+
+
+from sklearn.model_selection import cross_validate
+
+scores = cross_validate(dt, X_test, y_test, cv=kfold, scoring='accuracy',return_train_score=True)
+print(f"Average Testing Accuracy : {scores['test_score'].mean()}")
+print(f"Testing Accuracy : {scores['test_score']}")
+
+plt.plot(scores['train_score'] ,label ='training score', marker='o')
+plt.plot(scores['test_score'] ,label ='testing score',marker='o')
+plt.title("Decision Tree Cross Validation Results")
+plt.xlabel("Cross Validation")
+plt.ylabel("Score")
+plt.legend()
+plt.show()
+
+
+# In[160]:
+
+
+rf = RandomForestClassifier(criterion='gini',
+                            max_depth=16 , #was 8 testing 16
+                            n_estimators = 200,
+                         max_features ='log2'
+                            
+                             )
+rf.fit(X_train, y_train)
+predictions = rf.predict(X_test)
+results_rf = modelEvaluation(rf,predictions, y_test, "RandomForestClassifier")
+
+
+# In[161]:
+
+
+from sklearn.model_selection import cross_validate
+
+scores = cross_validate(rf, X_test, y_test, cv=kfold, scoring='accuracy',return_train_score=True)
+print(f"Average Testing Accuracy : {scores['test_score'].mean()}")
+print(f"Testing Accuracy : {scores['test_score']}")
+
+plt.plot(scores['train_score'] ,label ='training score', marker='o')
+plt.plot(scores['test_score'] ,label ='testing score',marker='o')
+plt.title("Random Forest Cross Validation Results")
+plt.xlabel("Cross Validation")
+plt.ylabel("Score")
+plt.legend()
+plt.show()
 
 
 # In[ ]:
