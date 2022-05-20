@@ -44,22 +44,28 @@ warnings.filterwarnings('ignore')
 
 # <b>Data Prerp for Ireland</b>
 
-# In[2]:
+# In[163]:
 
 
 df_crop = pd.read_csv("Crop Yield.csv")
 
 
-# In[3]:
+# In[164]:
 
 
 df_crop
 
 
-# In[4]:
+# In[165]:
 
 
 df_crop.info()
+
+
+# In[166]:
+
+
+df_crop.shape
 
 
 # In[5]:
@@ -968,22 +974,11 @@ fig.update_yaxes(showspikes=True)
 fig.show()
 
 
-# In[121]:
+# In[169]:
 
 
 #cmparing yield+drill down into type of crop
 fig = px.bar(df_visualization, x="Country", y="Tonnes_Yield", color="Crop_Type", title="comparison with crop type")
-fig.show()
-
-
-# In[122]:
-
-
-#histfunc='avg',
-fig = px.histogram(df_vis_year_2007, x="year", y="Tonnes_Yield",
-             color='Country', barmode='group',
-             
-             height=400)
 fig.show()
 
 
@@ -1035,8 +1030,6 @@ y = X['Type_of_Crop']
 
 # 70/30 split as per texbooks
 X_train, X_test, y_train, y_test = train_test_split(X_new,y, test_size = 0.3, random_state = 42)##removed stratisfy
-#ref for random state
-#https://stackoverflow.com/questions/42191717/scikit-learn-random-state-in-splitting-dataset
 
 
 # In[129]:
@@ -1045,9 +1038,6 @@ X_train, X_test, y_train, y_test = train_test_split(X_new,y, test_size = 0.3, ra
 # function for evaluation metrics precision, recall, f1 etc
 #this way we save time printing results,tables and graphs at the end of each ML model
 #simillar functions exist or can be written for data visualization
-#concepts taken from bellow+Udemy course mentioned above
-#ref https://stackoverflow.com/questions/28931224/adding-value-labels-on-a-matplotlib-bar-chart
-#ref https://stackoverflow.com/questions/40249943/adding-percentage-labels-to-a-bar-chart-in-ggplot2
 def modelEvaluation(model,predictions, y_test_set, model_name):
     #defining modelEvaluation with existing methods/functions from ML libraries
     kfold = KFold(n_splits=10)
@@ -1079,9 +1069,7 @@ def modelEvaluation(model,predictions, y_test_set, model_name):
     
     #plotting the confusion matrix and adding additional % lables
     #simillar functions exist and can be written for data visualization to add % or data on top of bar plots etc.
-    #concepts taken form bellow+Udemy course mentioned above
-    ##ref https://stackoverflow.com/questions/28931224/adding-value-labels-on-a-matplotlib-bar-chart
-    #ref https://stackoverflow.com/questions/40249943/adding-percentage-labels-to-a-bar-chart-in-ggplot2
+    
     labels = np.asarray(
         [
             ["{0:0.0f}".format(item) + "\n{0:.2%}".format(item / cm.flatten().sum()) for item in cm.flatten()]
@@ -1278,8 +1266,6 @@ y = X['Crop_Type']
 
 # 70/30 split as per texbooks
 X_train, X_test, y_train, y_test = train_test_split(X_new,y, test_size = 0.3, random_state = 42)##removed stratisfy
-#ref for random state
-#https://stackoverflow.com/questions/42191717/scikit-learn-random-state-in-splitting-dataset
 
 
 # In[155]:
@@ -1432,11 +1418,7 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
-
-
-######interactive dashboard####
-
+# <h1>Interactive dashboard</h1>
 
 # In[226]:
 
